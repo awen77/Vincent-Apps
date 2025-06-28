@@ -5,31 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vincent's 软件库</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="data.js" defer></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f7ff 100%);
+    }
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <header class="bg-white shadow p-4 text-center font-bold text-xl">Vincent's 软件库</header>
-  <section id="content" class="p-4 max-w-3xl mx-auto">
-    <h2 class="text-2xl font-semibold mb-4">热门推荐</h2>
+<body class="text-gray-800">
+  <div class="bg-blue-100 text-blue-800 text-sm text-center py-2">
+    🎉 软件库已上线测试版 v1.0，持续更新中...
+  </div>
+
+  <header class="sticky top-0 bg-white border-b p-4 flex justify-center items-center shadow z-50">
+    <span class="font-bold text-xl">Vincent's Apps</span>
+  </header>
+
+  <section class="text-center pt-10 pb-6">
+    <h1 class="text-3xl font-bold mb-3 text-gray-900">探索优质软件下载资源</h1>
+    <p class="text-gray-600">精选工具、干净无广告、一键直达蓝奏云</p>
+  </section>
+
+  <section id="categories" class="max-w-6xl mx-auto px-4 py-6">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+      <button onclick="loadCategory('movie')" class="bg-white hover:bg-blue-50 rounded-lg p-6 text-center shadow floating transition">
+        <div class="text-3xl mb-2">🎬</div>
+        <div class="font-medium">影视软件</div>
+      </button>
+      <button onclick="loadCategory('novel')" class="bg-white hover:bg-blue-50 rounded-lg p-6 text-center shadow floating transition">
+        <div class="text-3xl mb-2">📚</div>
+        <div class="font-medium">漫画小说</div>
+      </button>
+      <button onclick="loadCategory('gentle')" class="bg-white hover:bg-blue-50 rounded-lg p-6 text-center shadow floating transition">
+        <div class="text-3xl mb-2">🕶️</div>
+        <div class="font-medium">低调绅士</div>
+      </button>
+      <button onclick="loadCategory('proxy')" class="bg-white hover:bg-blue-50 rounded-lg p-6 text-center shadow floating transition">
+        <div class="text-3xl mb-2">🚀</div>
+        <div class="font-medium">科学上网</div>
+      </button>
+    </div>
+  </section>
+
+  <section id="content" class="max-w-4xl mx-auto px-4 py-10">
+    <h2 id="content-title" class="text-2xl font-semibold mb-6 text-center">🔥 热门推荐</h2>
     <div id="software-list" class="space-y-4"></div>
   </section>
+
+  <footer class="text-center text-sm text-gray-400 py-10 border-t">
+    本站资源仅供学习交流使用，版权归原作者所有。若有侵权请联系站长处理。<br />
+    © 2025 Vincent's 软件库
+  </footer>
+
   <script>
+    const softwareData = {
+      movie: [
+        { name: "PotPlayer 高级版", desc: "本地播放器，支持外挂字幕", link: "https://wwp.lanzoup.com/iOU872zcwx8d", code: "1234", date: "2025-06-01", stars: 5 },
+        { name: "MX Player 解锁版", desc: "安卓平台视频神器", link: "https://wwp.lanzoup.com/iABCDxyz123", code: "abcd", date: "2025-06-10", stars: 4 }
+      ],
+      novel: [
+        { name: "猫耳FM", desc: "听书神器，支持下载", link: "https://wwp.lanzoup.com/iEFGH987abc", code: "2222", date: "2025-05-20", stars: 3 }
+      ],
+      gentle: [
+        { name: "轻阅", desc: "纯净模式+私密空间", link: "https://wwp.lanzoup.com/iIJKL321mno", code: "7890", date: "2025-06-05", stars: 4 }
+      ],
+      proxy: [
+        { name: "电影猎手", desc: "聚合版影视大全纯净版", link: "https://wwp.lanzoup.com/iOU872zcwx8d", code: "3vjl", date: "2025-06-28", stars: 5 }
+      ]
+    };
+
+    function loadCategory(type) {
+      const titleMap = {
+        movie: '影视软件',
+        novel: '漫画小说',
+        gentle: '低调绅士',
+        proxy: '科学上网'
+      };
+      document.getElementById('content-title').textContent = titleMap[type] || '分类内容';
+      renderList(softwareData[type] || []);
+    }
+
     function renderList(data) {
       const list = document.getElementById('software-list');
       list.innerHTML = '';
+
       data.forEach(item => {
+        // 判断 icon 字段，如果是base64图片就用img标签，否则用emoji
+        const isBase64Icon = typeof item.icon === 'string' && item.icon.startsWith('data:image/');
+        const iconHtml = isBase64Icon
+          ? `<img src="${item.icon}" alt="图标" class="w-12 h-12 rounded-lg" />`
+          : `<div class="w-16 h-16 flex items-center justify-center bg-blue-100 text-3xl text-blue-500 rounded-lg">${item.icon || '📦'}</div>`;
+
         const stars = '⭐'.repeat(item.stars || 3);
-        list.innerHTML += `
-          <div class="bg-white p-4 rounded shadow">
-            <h3 class="text-lg font-bold">${item.name}</h3>
-            <p>${item.desc}</p>
-            <p class="text-sm text-gray-500">上传时间：${item.date}｜推荐指数：${stars}</p>
-            <a href="${item.link}" class="inline-block mt-2 text-blue-600" target="_blank">蓝奏云下载（提取码：${item.code}）</a>
+
+        const div = document.createElement('div');
+        div.className = 'bg-white border rounded-xl p-4 shadow hover:shadow-lg transition space-y-3';
+
+        div.innerHTML = `
+          <h3 class="text-lg font-bold text-center text-blue-700">${item.name}</h3>
+          <div class="flex items-start space-x-4">
+            ${iconHtml}
+            <div class="flex-1">
+              <p class="text-sm text-gray-700">${item.desc || ''}</p>
+              <p class="text-xs text-gray-500 mt-1">📅 上传日期：${item.date || '未知'}</p>
+              <p class="text-xs text-yellow-600 mt-1">✨ 推荐指数：${stars}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <a href="${item.link}" target="_blank" class="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 rounded-lg shadow">
+              蓝奏云下载（提取码：${item.code || ''}）
+            </a>
           </div>
         `;
+        list.appendChild(div);
       });
     }
-    renderList(softwareData.movie);
+
+    // 默认加载推荐
+    renderList([
+      { name: "电影猎手", desc: "聚合版全网影视软件纯净版", link: "https://wwp.lanzoup.com/iOU872zcwx8d", code: "3vjl", date: "2025-06-28", stars: 5 },
+      { name: "PotPlayer 高级版", desc: "顶级本地播放器，支持外挂字幕和硬解加速", link: "https://wwp.lanzoup.com/iOU872zcwx8d", code: "1234", date: "2025-06-01", stars: 5 }
+    ]);
   </script>
 </body>
 </html>
